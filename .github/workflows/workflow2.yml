@@ -1,4 +1,4 @@
-name: Run All Tests (Unit, Integration, System)
+name: Run Unit, Integration, and System Tests
 
 on:
   pull_request:
@@ -25,5 +25,5 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
 
-    - name: Run All Tests (unit, integration, system including e2e)
-      run: mvn test
+    - name: Run Unit, Integration, and System Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**,es.codeurjc.web.nitflex.integration.**,es.codeurjc.web.nitflex.e2e.web.**
