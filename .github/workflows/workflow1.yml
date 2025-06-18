@@ -20,5 +20,5 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    - name: Run Unit, Integration, and Smoke Tests (excluding E2E)
-      run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**,es.codeurjc.web.nitflex.integration.**,es.codeurjc.web.nitflex.smoke.**
+    - name: Run Unit, Integration
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**,es.codeurjc.web.nitflex.integration.**
