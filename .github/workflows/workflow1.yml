@@ -23,7 +23,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Unit Tests
-        run: mvn surefire:test -Dtest="es.codeurjc.web.nitflex.unit.*Test"
+        run: mvn surefire:test -Dtest=*UnitTest
 
       - name: Run Integration Tests
-        run: mvn failsafe:integration-test failsafe:verify
+        run: mvn failsafe:integration-test failsafe:verify -Dtest=*IntegrationTest
