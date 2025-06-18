@@ -1,7 +1,6 @@
-name: Run Unit, Integration, and Smoke Tests
+name: Run Unit, Integration, E2E, and Smoke Tests
 
 on:
-
   pull_request:
     branches: [ main ]
 
@@ -19,5 +18,15 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    - name: Run Unit, Integration
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: stable
+
+    - name: Set Chrome options
+      run: |
+        export PROFILE_ID=$(date +%s%N)
+        echo "CHROME_ARGS=--headless --no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome-profile-$PROFILE_ID" >> $GITHUB_ENV
+
+    - name: Run Unit, Integration, E2E, and Smoke Tests
       run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**,es.codeurjc.web.nitflex.integration.**,es.codeurjc.web.nitflex.e2e.**,es.codeurjc.web.nitflex.smoke.**
