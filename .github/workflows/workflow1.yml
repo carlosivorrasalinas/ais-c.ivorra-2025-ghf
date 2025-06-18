@@ -1,8 +1,8 @@
-name: Full Tests for Pull Requests
+name: Unit and Integration Tests
 
 on:
-  pull_request:
-    branches:
+  push:
+    branches-ignore:
       - main
     paths:
       - 'src/**'
@@ -22,29 +22,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb
-          sudo apt-get install -f -y
-
-      - name: Install ChromeDriver
-        run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')
-          CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip /tmp/chromedriver.zip -d /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
-
       - name: Run Unit Tests
-        run: mvn test -Dtest="es.codeurjc.web.nitflex.unit.*Test" -DskipITs
+        run: mvn surefire:test -Dtest="es.codeurjc.web.nitflex.unit.*Test"
 
       - name: Run Integration Tests
-        run: mvn integration-test -DskipTests
-
-      - name: Run System Tests
-        run: mvn test -Dtest="es.codeurjc.web.nitflex.*SystemTest" -DskipITs
-        env:
-          CHROME_DRIVER_ARGS: --headless --no-sandbox --disable-dev-shm-usage --disable-gpu
+        run: mvn failsafe:integration-test failsafe:verify
