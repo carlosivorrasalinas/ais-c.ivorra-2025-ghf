@@ -54,7 +54,7 @@
 			<artifactId>h2</artifactId>
 		</dependency>
 
-		<!-- TEST DEPENDENCIES pr33-->
+		<!-- TEST DEPENDENCIES pr334-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
