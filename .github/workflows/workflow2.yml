@@ -1,4 +1,4 @@
-name: Run Unit, Integration, and System Tests
+name: Run Unit, Integration, and E2E Tests
 
 on:
   pull_request:
@@ -19,11 +19,12 @@ jobs:
         distribution: 'temurin'
 
     - name: Install Chrome
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget unzip
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: stable
 
-    - name: Run Unit, Integration, and System Tests
-      run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**,es.codeurjc.web.nitflex.integration.**,es.codeurjc.web.nitflex.e2e.web.**
+    - name: Set Chrome options
+      run: echo "CHROME_ARGS=--headless --no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome-profile-$(uuidgen)" >> $GITHUB_ENV
+
+    - name: Run Unit, Integration and E2E Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**,es.codeurjc.web.nitflex.integration.**,es.codeurjc.web.nitflex.e2e.**
