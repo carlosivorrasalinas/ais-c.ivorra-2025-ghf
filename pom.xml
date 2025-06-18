@@ -119,7 +119,7 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			<!-- PLUGIN FOR JACOCO -->
+			<!-- PLUGIN FOR JACOCO prueba 2 -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
