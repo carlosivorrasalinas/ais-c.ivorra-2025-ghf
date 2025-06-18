@@ -101,7 +101,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.5.2</version>
 			</plugin>
-			<!-- PLUGIN FOR MAPSTRUCT-->
+			<!-- PLUGIN FOR MAPSTRUCT prueba 11 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
