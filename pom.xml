@@ -68,7 +68,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- SELENIUM -->
+		<!-- SELENIUM pr15-->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
