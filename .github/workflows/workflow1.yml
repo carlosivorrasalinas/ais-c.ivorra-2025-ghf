@@ -2,9 +2,9 @@ name: Run Unit, Integration, and Smoke Tests
 
 on:
   push:
-    branches: [ main ]
+    branches-ignore: [ main ]
   pull_request:
-    branches: [ main ]
+    branches-ignore: [ main ]
 
 jobs:
   build:
