@@ -2,7 +2,7 @@ name: Nightly Cross-Browser System Tests
 
 on:
   schedule:
-    - cron: '1 6 * * *'  # Se ejecuta a las 5:04 CEST (3:04 UTC)
+    - cron: '1 6 * * *'  # Se ejecuta a las 5:01 CEST (3:01 UTC)
   workflow_dispatch:
 
 jobs:
@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         browser: [chrome, firefox, edge]
+      fail-fast: true  # Detiene todo si un navegador falla
 
     steps:
       - name: Checkout repository
@@ -36,3 +37,34 @@ jobs:
 
       - name: Run system test with browser ${{ matrix.browser }}
         run: mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.FilmUIMultiBrowserTest -Dbrowser=${{ matrix.browser }}
+
+  nightly-docker:
+    needs: nightly-tests
+    runs-on: ubuntu-latest
+    if: success()  # Solo si todos los tests pasan
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Get current date
+        id: date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image with nightly tag
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:nightly-${{ env.DATE }} .
+
+      - name: Push Docker image with nightly tag
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:nightly-${{ env.DATE }}
