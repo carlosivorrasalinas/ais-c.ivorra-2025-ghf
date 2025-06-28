@@ -24,5 +24,8 @@ jobs:
     - name: Run Integration Tests
       run: mvn test -Dtest=es.codeurjc.web.nitflex.integration.**
 
-    - name: Run System Tests
-      run: mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.**
+    - name: Run System Test1
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.FilmWebControllerTest
+
+    - name: Run System Test2
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.FilmUIMultiBrowserTest -Dbrowser=chrome
