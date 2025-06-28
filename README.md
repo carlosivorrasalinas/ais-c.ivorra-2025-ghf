@@ -1,10 +1,10 @@
 # AIS-Practicas-4y5-2025
 
-Autor(es): <tu nombre>
+Autor(es): Carlos Ivorra Salinas
 
-[Repositorio](https://github.com/URJC-AIS/AIS-Practica-4y5-2025-template)
+[Repositorio](https://github.com/carlosivorrasalinas/ais-c.ivorra-2025-ghf)
 
-[Aplicación Azure](http://ais-nitflex.westeurope.azurecontainer.io:8080)
+[Aplicación Azure](netflix-azure123-d9fyepg0hba0a5fb.westeurope-01.azurewebsites.net)
 
 ## Desarrollo con GitHubFlow
 
