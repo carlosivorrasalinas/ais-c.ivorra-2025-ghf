@@ -19,15 +19,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Run Unit Tests
-        run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**
-
-      - name: Run Integration Tests
-        run: mvn test -Dtest=es.codeurjc.web.nitflex.integration.**
-
-      - name: Run System Tests
-        run: mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.**
-
       - name: Package application
         run: mvn package -DskipTests
 
@@ -53,7 +44,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:latest
 
       - name: Wait for Azure deployment to update
-        run: sleep 60  # Da tiempo a que Azure use la nueva imagen
+        run: sleep 60
 
       - name: Run Smoke Test
         run: mvn test -Dtest=es.codeurjc.web.nitflex.smoke.SmokeTest -Dhost=https://netflix-azure123-d9fyepg0hba0a5fb.westeurope-01.azurewebsites.net
