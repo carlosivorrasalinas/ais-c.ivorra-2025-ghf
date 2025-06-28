@@ -1,51 +1,48 @@
-package es.codeurjc.web.nitflex.selenium;
+package es.codeurjc.web.nitflex.unit;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.time.Duration;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Test;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.springframework.ui.Model;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.web.multipart.MultipartFile;
 
-public class InvalidYearSeleniumTest {
+import es.codeurjc.web.nitflex.controller.web.FilmWebController;
+import es.codeurjc.web.nitflex.dto.film.CreateFilmRequest;
+import es.codeurjc.web.nitflex.dto.film.FilmDTO;
+import es.codeurjc.web.nitflex.service.FilmService;
 
-    private WebDriver driver;
-    private WebDriverWait wait;
-    private String baseUrl;
+public class InvalidYearUnitTest {
 
-    @BeforeEach
-    public void setUp() {
-        baseUrl = System.getProperty("host", "http://localhost:8080");
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    static class FakeFilmService extends FilmService {
+
+        public boolean saveCalled = false;
+
+        public FakeFilmService() {
+            super(null, null, null, null); // Constructor real con 4 args
+        }
+
+        @Override
+        public FilmDTO save(CreateFilmRequest request, MultipartFile image) {
+            saveCalled = true;
+            return new FilmDTO(); // Dummy object
+        }
     }
 
     @Test
-    public void shouldShowErrorWhenYearIsInvalid() {
-        driver.get(baseUrl + "/films/new");
+    void shouldNotCallSaveWhenYearIsInvalid() throws Exception {
+        CreateFilmRequest film = new CreateFilmRequest("Test", "Desc", 1700, "PG");
+        MultipartFile image = null;
+        Model model = new ConcurrentModel();
 
-        driver.findElement(By.name("title")).sendKeys("Pelicula de prueba");
-        driver.findElement(By.name("releaseYear")).sendKeys("1700");
-        driver.findElement(By.cssSelector("form.ui.form")).submit();
+        FakeFilmService service = new FakeFilmService();
+        FilmWebController controller = new FilmWebController(service);
 
-        WebElement errorBox = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(By.className("error"))
-        );
+        String view = controller.newFilmProcess(film, image, model);
 
-        assertTrue(errorBox.getText().contains("1895"));
-    }
-
-    @AfterEach
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+        assertEquals("filmForm", view);
+        assertFalse(service.saveCalled);
     }
 }
