@@ -17,6 +17,19 @@ Clonamos el repositorio
 $ git clone git@github.com:URJC-AIS/AIS-Practica-4y5-2025-template.git
 ```
 
+
+
+## Capturas del despliegue en Azure
+
+### Página principal de Nitflex
+![Captura Nitflex](capturas/capturaNitflex.png)
+
+### Enlace al sitio en Azure
+![Captura Link Azure](capturas/capturaLinkAzure.png)
+
+### GitHub Action creando la web en Azure
+![Captura Action Crear Azure](capturas/capturaActionCrearAzure.png)
+
 ### 1. Desarrollo de la funcionalidad 'Validación del año de estreno'
 
 ...
