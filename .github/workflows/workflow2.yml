@@ -1,47 +1,28 @@
-name: Full Tests for Pull Requests
+name: Run All Tests Before Merge
 
 on:
   pull_request:
-    branches:
-      - main
-    paths:
-      - 'src/**'
-      - 'pom.xml'
+    branches: [ main ]
 
 jobs:
-  test:
+  test-all:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
 
-      - name: Install Google Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+    - name: Run Unit Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**
 
-      - name: Install ChromeDriver
-        run: |
-          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          unzip /tmp/chromedriver.zip -d /usr/local/bin/
-          chmod +x /usr/local/bin/chromedriver
+    - name: Run Integration Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.integration.**
 
-      - name: Run Unit Tests
-        run: mvn test -Dtest="es.codeurjc.web.nitflex.unit.*Test"
-
-      - name: Run Integration Tests
-        run: mvn failsafe:integration-test
-
-      - name: Run System Tests
-        run: mvn test -Dtest="es.codeurjc.web.nitflex.*Test,!es.codeurjc.web.nitflex.smoke.*"
-        env:
-          CHROME_DRIVER_ARGS: --headless --no-sandbox --disable-dev-shm-usage
+    - name: Run System Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.system.**
