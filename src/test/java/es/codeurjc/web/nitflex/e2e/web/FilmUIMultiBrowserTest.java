@@ -31,21 +31,37 @@ public class FilmUIMultiBrowserTest {
         }
 
         switch (browser.toLowerCase()) {
-            case "chrome":
-                driver = new ChromeDriver();
-                break;
-            case "firefox":
-                driver = new FirefoxDriver();
-                break;
-            case "edge":
-                driver = new EdgeDriver();
-                break;
-            default:
-                throw new IllegalArgumentException("Navegador no soportado: " + browser);
-        }
+    case "chrome":
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--headless");
+        chromeOptions.addArguments("--no-sandbox");
+        chromeOptions.addArguments("--disable-dev-shm-usage");
+        chromeOptions.addArguments("--user-data-dir=/tmp/chrome-profile-" + java.util.UUID.randomUUID());
+        driver = new ChromeDriver(chromeOptions);
+        break;
 
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    }
+    case "firefox":
+        FirefoxOptions firefoxOptions = new FirefoxOptions();
+        firefoxOptions.addArguments("-headless");
+        firefoxOptions.addArguments("-no-remote");
+        firefoxOptions.addArguments("-profile");
+        firefoxOptions.addArguments("/tmp/firefox-profile-" + java.util.UUID.randomUUID());
+        driver = new FirefoxDriver(firefoxOptions);
+        break;
+
+    case "edge":
+        EdgeOptions edgeOptions = new EdgeOptions();
+        edgeOptions.addArguments("--headless");
+        edgeOptions.addArguments("--no-sandbox");
+        edgeOptions.addArguments("--disable-dev-shm-usage");
+        edgeOptions.addArguments("--user-data-dir=/tmp/edge-profile-" + java.util.UUID.randomUUID());
+        driver = new EdgeDriver(edgeOptions);
+        break;
+
+    default:
+        throw new IllegalArgumentException("Navegador no soportado: " + browser);
+}
+
 
     @AfterEach
     void teardown() {
