@@ -1,4 +1,4 @@
-name: Nightly Cross-Browser System Tests
+name: Nightly Cross-Browser System Tests at 6and 1 am
 
 on:
   schedule:
