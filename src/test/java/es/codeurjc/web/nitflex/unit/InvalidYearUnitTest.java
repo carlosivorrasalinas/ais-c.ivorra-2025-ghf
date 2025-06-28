@@ -1,35 +1,40 @@
 package es.codeurjc.web.nitflex.unit;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-import java.util.List;
-
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import es.codeurjc.web.nitflex.controller.web.FilmWebController;
+import es.codeurjc.web.nitflex.dto.film.CreateFilmRequest;
+import es.codeurjc.web.nitflex.service.FilmService;
 
-@WebMvcTest(FilmWebController.class)
-@DisplayName("Validación de año incorrecto en películas")
-public class InvalidYearUnitTest {
-
-    @Autowired
-    private MockMvc mockMvc;
+@DisplayName("Test unitario puro: creación fallida por año inválido")
+public class CreateFilmInvalidYearUnitTest {
 
     @Test
-    @DisplayName("No se crea película si el año es anterior a 1895 y se muestra error")
-    void shouldShowErrorIfYearIsInvalid() throws Exception {
-        mockMvc.perform(post("/films/new")
-                        .param("title", "Película antigua")
-                        .param("releaseYear", "1800"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("filmForm"))
-                .andExpect(model().attribute("errors", Matchers.hasItem("El año debe ser 1895 o posterior.")));
+    @DisplayName("No se debe crear la película si el año es anterior a 1895 y debe quedarse en filmForm")
+    void shouldNotCreateFilmIfYearIsInvalid() throws Exception {
+        // Arrange
+        CreateFilmRequest film = new CreateFilmRequest();
+        film.setTitle("Película antigua");
+        film.setYear(1800); // Año inválido
+
+        MultipartFile mockImage = mock(MultipartFile.class);
+        FilmService mockService = mock(FilmService.class); // Servicio simulado
+
+        FilmWebController controller = new FilmWebController(mockService);
+        Model model = new ConcurrentModel();
+
+        // Act
+        String resultView = controller.newFilmProcess(film, mockImage, model);
+
+        // Assert
+        assertEquals("filmForm", resultView); // No redirige
+        verify(mockService, never()).save(any(CreateFilmRequest.class), any(MultipartFile.class)); // No llama a save
     }
 }
