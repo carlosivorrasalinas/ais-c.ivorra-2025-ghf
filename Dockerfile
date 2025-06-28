@@ -1,21 +1,14 @@
-# Usa JDK 21 como base
+# Imagen base ligera con Java 21
 FROM eclipse-temurin:21-jdk
 
-# Crea directorio de trabajo
+# Carpeta de trabajo
 WORKDIR /app
 
-# Copia el pom y descarga dependencias
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Copiamos el jar ya compilado
+COPY target/nitflex-web-bbdd-rest-*.jar app.jar
 
-# Copia todo el código fuente
-COPY src ./src
-
-# Compila el proyecto
-RUN mvn package -DskipTests
-
-# Expone el puerto
+# Puerto en el que se ejecutará la app
 EXPOSE 8080
 
-# Ejecuta la app
-CMD ["java", "-jar", "target/nitflex-web-bbdd-rest-1.0.0.jar"]
+# Comando que lanza la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
