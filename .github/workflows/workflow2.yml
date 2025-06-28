@@ -25,4 +25,4 @@ jobs:
       run: mvn test -Dtest=es.codeurjc.web.nitflex.integration.**
 
     - name: Run System Tests
-      run: mvn test -Dtest=es.codeurjc.web.nitflex.system.**
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.**
