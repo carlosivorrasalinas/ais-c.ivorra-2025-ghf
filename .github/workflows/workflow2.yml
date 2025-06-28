@@ -1,0 +1,28 @@
+name: Run unit, integration and system tests before merge on main
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-all:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Run Unit Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.unit.**
+
+    - name: Run Integration Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.integration.**
+
+    - name: Run System Tests
+      run: mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.**
