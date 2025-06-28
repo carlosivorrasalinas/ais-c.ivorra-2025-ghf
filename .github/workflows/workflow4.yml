@@ -1,0 +1,76 @@
+name: Nightly System Tests and Docker Push
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Cada día a las 3:00 UTC (~5:00 España)
+  workflow_dispatch:
+
+jobs:
+  test-system-matrix:
+    name: Run system tests on multiple OS/browsers
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        browser: [chrome, firefox]
+        include:
+          - os: windows-latest
+            browser: edge
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup browser for Selenium
+        run: |
+          echo "Usando navegador: ${{ matrix.browser }}"
+        shell: bash
+
+      - name: Run system test (Selenium)
+        run: |
+          mvn test -Dtest=es.codeurjc.web.nitflex.e2e.web.FilmUIMultiBrowserTest \
+                   -Dbrowser=${{ matrix.browser }}
+        env:
+          BROWSER: ${{ matrix.browser }}
+
+  build-nightly-image:
+    name: Build and push nightly Docker image
+    needs: test-system-matrix
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Package application
+        run: mvn package -DskipTests
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get current date
+        id: date
+        run: echo "TAG=nightly-$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:${{ env.TAG }} .
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:${{ env.TAG }}
