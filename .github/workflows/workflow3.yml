@@ -1,4 +1,4 @@
-name: Build and Deploy to Azure upload docker
+name: Build and Deploy to Azure
 
 on:
   push:
@@ -43,8 +43,15 @@ jobs:
           docker tag ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/nitflex:latest
 
-      - name: Wait for Azure deployment to update
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'netflix-azure123' 
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          images: 'docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nitflex:${{ env.VERSION }}'
+
+      - name: Wait for Azure deployment to complete
         run: sleep 60
 
       - name: Run Smoke Test
-        run: mvn test -Dtest=es.codeurjc.web.nitflex.smoke.SmokeTest -Dhost=https://netflix-azure123-d9fyepg0hba0a5fb.westeurope-01.azurewebsites.net
+        run: mvn test -Dtest=es.codeurjc.web.nitflex.smoke.SmokeTest -Dhost=https://NOMBRE-DE-TU-APP.azurewebsites.net
