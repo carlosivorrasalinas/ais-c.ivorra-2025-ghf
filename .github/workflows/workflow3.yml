@@ -56,4 +56,4 @@ jobs:
         run: sleep 60  # Da tiempo a que Azure use la nueva imagen
 
       - name: Run Smoke Test
-        run: mvn test -Dtest=es.codeurjc.web.nitflex.smoke.SmokeTest -Dhost=https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net
+        run: mvn test -Dtest=es.codeurjc.web.nitflex.smoke.SmokeTest -Dhost=https://netflix-azure123-d9fyepg0hba0a5fb.westeurope-01.azurewebsites.net
