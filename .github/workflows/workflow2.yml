@@ -1,4 +1,4 @@
-name: Run All Tests Before Merge
+name: Run unit, integration and system tests before merge on main
 
 on:
   pull_request:
