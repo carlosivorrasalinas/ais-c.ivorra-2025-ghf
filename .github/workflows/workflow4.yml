@@ -2,7 +2,7 @@ name: Nightly Cross-Browser System Tests
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Se ejecuta cada día a las 2 AM UTC
+    - cron: '4 3 * * *'  # Se ejecuta a las 5:04 CEST (3:04 UTC)
   workflow_dispatch:
 
 jobs:
