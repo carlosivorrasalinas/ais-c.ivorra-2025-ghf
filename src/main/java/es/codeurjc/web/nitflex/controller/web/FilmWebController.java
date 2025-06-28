@@ -89,10 +89,16 @@ public class FilmWebController {
 		model.addAttribute("ageRatings", AgeRating.values());
 		return "filmForm";
 	}
-	
+
 	@PostMapping("/films/new")
 	public String newFilmProcess(CreateFilmRequest film, MultipartFile imageField, Model model) {
-
+		if (film.releaseYear() < 1895) {
+			model.addAttribute("error", true);
+			model.addAttribute("errors", List.of("El año debe ser 1895 o posterior."));
+			model.addAttribute("action", "/films/new");  // Añadir esta línea
+			model.addAttribute("film", film);            // Para repoblar el formulario
+			return "filmForm";
+		}
 		FilmDTO newFilm = null;
 
 		try{
@@ -104,10 +110,10 @@ public class FilmWebController {
 			model.addAttribute("film", film);
 			return "filmForm";
 		}
-		
+
 		return "redirect:/films/" + newFilm.id();
 	}
-	
+
 	@GetMapping("/films/{id}/edit")
 	public String editFilm(Model model, @PathVariable long id) {
 
