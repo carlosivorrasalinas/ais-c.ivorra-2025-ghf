@@ -1,12 +1,16 @@
 package es.codeurjc.web.nitflex.e2e.web;
 
 import java.time.Duration;
+import java.util.UUID;
 
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,15 +35,36 @@ public class FilmUIMultiBrowserTest {
         }
 
         switch (browser.toLowerCase()) {
-            case "chrome":
-                driver = new ChromeDriver();
+            case "chrome": {
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--no-sandbox");
+                chromeOptions.addArguments("--disable-dev-shm-usage");
+                chromeOptions.addArguments("--user-data-dir=/tmp/chrome-profile-" + UUID.randomUUID());
+                driver = new ChromeDriver(chromeOptions);
                 break;
-            case "firefox":
-                driver = new FirefoxDriver();
+            }
+
+            case "firefox": {
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                firefoxOptions.addArguments("-headless");
+                firefoxOptions.addArguments("-no-remote");
+                firefoxOptions.addArguments("-profile");
+                firefoxOptions.addArguments("/tmp/firefox-profile-" + UUID.randomUUID());
+                driver = new FirefoxDriver(firefoxOptions);
                 break;
-            case "edge":
-                driver = new EdgeDriver();
+            }
+
+            case "edge": {
+                EdgeOptions edgeOptions = new EdgeOptions();
+                edgeOptions.addArguments("--headless");
+                edgeOptions.addArguments("--no-sandbox");
+                edgeOptions.addArguments("--disable-dev-shm-usage");
+                edgeOptions.addArguments("--user-data-dir=/tmp/edge-profile-" + UUID.randomUUID());
+                driver = new EdgeDriver(edgeOptions);
                 break;
+            }
+
             default:
                 throw new IllegalArgumentException("Navegador no soportado: " + browser);
         }

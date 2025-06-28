@@ -39,8 +39,8 @@
             <label>Age Rating</label>
             {{>ageRatingPartial}}
         </div>
-        <p> 
-            <button id="cancel" class="ui button" onclick="location.href='/films/{{#film.id}}{{film.id}}{{/film.id}}'; return false;">Cancel</button>
+        <p>
+            <button type="button" class="ui button" onclick="window.history.back();">Cancel</button>
             <input class="ui button orange" type="submit" id="Save" value="Save" />
         </p>
     </form>
